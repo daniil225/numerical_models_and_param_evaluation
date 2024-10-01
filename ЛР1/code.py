@@ -8,7 +8,7 @@ class Point(NamedTuple):
     y: float
     z: float
 
-sigma = 0.1
+sigma = 1
 alpha = 1e-7
 A = np.zeros((3, 3), dtype=np.float32)
 b = np.zeros(3, dtype=np.float32)
@@ -36,7 +36,7 @@ def VReal(recieverNum):
 def F():
     sum = 0.0
     for i in range(0,3):
-        w = 1.0 / V(i)
+        w = 1.0 / VReal(i)
         sum += (w * (V(i) - VReal(i)))**2
     return sum
 
@@ -56,7 +56,8 @@ def Distance(a: Point, b: Point):
 
 
 iter = 0
-while F() >= 1e-14 and iter < 2:
+while F() >= 1e-10 and iter < 100:
+    print(f"{F():e}")
     for q in range(0, 3):
         for s in range(0, 3):
             sum = 0.0
@@ -78,7 +79,7 @@ while F() >= 1e-14 and iter < 2:
         b[q] -= alpha * (I[q] - IRegu[q])
     print(b)
     I += sp.solve(A, b, assume_a="sym")
-    #print(f"{F():e}")
+    print(f"{F():e}")
     #print(I)
     iter += 1
 print(I)
